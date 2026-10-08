@@ -26,4 +26,40 @@ model Profile {
   avatarUrl String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  builds    Build[]
+}
+
+model Manufacturer {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  components Component[]
+}
+
+model Component {
+  id             Int           @id @default(autoincrement())
+  name           String
+  category       String        // "CPU", "GPU", "RAM"...
+  priceCents     Int
+  powerWatts     Int
+  manufacturer   Manufacturer  @relation(fields: [manufacturerId], references: [id], onDelete: Cascade)
+  manufacturerId Int
+  buildItems     BuildItem[]
+}
+
+model Build {
+  id             Int         @id @default(autoincrement())
+  name           String
+  maxBudgetCents Int
+  profile        Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId      Int
+  items          BuildItem[]
+}
+
+model BuildItem {
+  id          Int       @id @default(autoincrement())
+  build       Build     @relation(fields: [buildId], references: [id], onDelete: Cascade)
+  buildId     Int
+  component   Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
+  componentId Int
+  quantity    Int       @default(1)
 }
