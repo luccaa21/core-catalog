@@ -27,7 +27,7 @@ export class UsersController {
   @Patch(':id')
   async update(@Param('id', ParseIntPipe) id: number, 
                @Body() body: UpdateUserDto) {
-    return this.service.update(+id, body);
+    return this.service.update(id, body);
   }
 
   @Delete(':id')
