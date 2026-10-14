@@ -97,7 +97,6 @@ export class BuildsService {
       totalCents,
       totalWatts,
       maxBudgetCents: build.maxBudgetCents,
-      overBudget: totalCents > build.maxBudgetCents,
       items: build.items.map((i) => ({
         componentId: i.component.id,
         name: i.component.name,
