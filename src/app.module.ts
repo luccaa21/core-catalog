@@ -5,9 +5,10 @@ import { ProfilesModule } from './profiles/profiles.module';
 import { ManufacturersModule } from './manufacturers/manufacturers.module';
 import { ComponentsModule } from './components/components.module';
 import { BuildsModule } from './builds/builds.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, ProfilesModule, ManufacturersModule, ComponentsModule, BuildsModule],
+  imports: [PrismaModule, UsersModule, ProfilesModule, ManufacturersModule, ComponentsModule, BuildsModule, AuthModule],
   controllers: [],
   providers: [],
 })

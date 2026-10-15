@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -10,6 +11,8 @@ async function bootstrap() {
     .setTitle('Core Catalog')
     .setDescription('API de Programação Web e Mobile')
     .setVersion('1.0')
+    .addBearerAuth()
+    .addSecurityRequirements('bearer')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
