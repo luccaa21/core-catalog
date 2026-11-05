@@ -24,12 +24,15 @@ export class BuildsService {
     });
   }
 
-  async addItem(buildId: number, dto: AddBuildItemDto) {
+  async addItem(buildId: number, dto: AddBuildItemDto, userId: number) {
     const build = await this.prisma.build.findUnique({
       where: { id: buildId },
-      include: { items: { include: { component: true } } },
+      include: {
+        profile: { select: { userId: true } },
+        items: { include: { component: true } },
+      },
     });
-    if (!build) {
+    if (!build || build.profile.userId !== userId) {
       throw new NotFoundException(`Build ${buildId} não encontrada`);
     }
 
@@ -41,7 +44,6 @@ export class BuildsService {
     }
 
     const quantity = dto.quantity ?? 1;
-
     const currentTotal = build.items.reduce(
       (sum, i) => sum + i.component.priceCents * i.quantity,
       0,
@@ -113,5 +115,13 @@ export class BuildsService {
         subtotalCents: i.component.priceCents * i.quantity,
       })),
     };
+  }
+
+  findMine(userId: number) {
+    return this.prisma.build.findMany({
+      where: { profile: { userId } },
+      select: { id: true, name: true, maxBudgetCents: true },
+      orderBy: { id: 'desc' },
+    });
   }
 }

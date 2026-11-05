@@ -13,9 +13,12 @@ export class BuildsController {
   }
 
   @Post(':id/items')
-  async addItem(@Param('id', ParseIntPipe) id: number,
-    @Body() dto: AddBuildItemDto) {
-    return this.buildsService.addItem(id, dto);
+  addItem(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: AddBuildItemDto,
+    @Req() req: { user: { sub: number } },
+  ) {
+    return this.buildsService.addItem(id, dto, req.user.sub);
   }
 
   @Get(':id/summary')
@@ -24,5 +27,10 @@ export class BuildsController {
     @Req() req: { user: { sub: number } },
   ) {
     return this.buildsService.summary(id, req.user.sub);
+  }
+
+  @Get('mine')
+  findMine(@Req() req: { user: { sub: number } }) {
+    return this.buildsService.findMine(req.user.sub);
   }
 }
