@@ -59,10 +59,11 @@ export class BuildsService {
     });
   }
 
-  async summary(id: number) {
+  async summary(id: number, userId: number) {
     const build = await this.prisma.build.findUnique({
       where: { id },
       include: {
+        profile: { select: { userId: true, fullName: true } },
         items: {
           include: {
             component: {
@@ -79,7 +80,9 @@ export class BuildsService {
         },
       },
     });
-    if (!build) {
+
+    // Responde 404 também para builds de outros usuários, sem revelar que existem
+    if (!build || build.profile.userId !== userId) {
       throw new NotFoundException(`Build ${id} não encontrada`);
     }
 
@@ -94,9 +97,11 @@ export class BuildsService {
 
     return {
       name: build.name,
+      owner: build.profile.fullName,
       totalCents,
       totalWatts,
       maxBudgetCents: build.maxBudgetCents,
+      overBudget: totalCents > build.maxBudgetCents,
       items: build.items.map((i) => ({
         componentId: i.component.id,
         name: i.component.name,
