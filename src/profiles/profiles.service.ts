@@ -60,4 +60,17 @@ export class ProfilesService {
     const profile = await this.prisma.profile.findUnique({ where: { id } });
     if (!profile) throw new NotFoundException(`Perfil ${id} não encontrado`);
   }
+
+  findByUser(userId: number) {
+  return this.prisma.profile.findUnique({
+    where: { userId },
+    select: {
+      id: true,
+      userId: true,
+      fullName: true,
+      birthDate: true,
+      avatarUrl: true,
+    },
+  });
+}
 }

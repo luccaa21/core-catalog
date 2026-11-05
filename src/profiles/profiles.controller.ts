@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Req } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { CreateMyProfileDto } from './dto/create-my-profile.dto';
 
 @Controller('profiles')
 export class ProfilesController {
@@ -25,5 +26,18 @@ export class ProfilesController {
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.profilesService.remove(id);
+  }
+
+  @Get('me')
+  findMine(@Req() req: { user: { sub: number } }) {
+    return this.profilesService.findByUser(req.user.sub);
+  }
+
+  @Post('me')
+  createMine(
+    @Req() req: { user: { sub: number } },
+    @Body() dto: CreateMyProfileDto,
+  ) {
+    return this.profilesService.create({ ...dto, userId: req.user.sub });
   }
 }
