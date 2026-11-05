@@ -7,19 +7,19 @@ import { AddBuildItemDto } from './dto/add-build-item-dto';
 export class BuildsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(dto: CreateBuildDto) {
+  async create(dto: CreateBuildDto, userId: number) {
     const profile = await this.prisma.profile.findUnique({
-      where: { id: dto.profileId },
+      where: { userId },
     });
     if (!profile) {
-      throw new NotFoundException(`Perfil ${dto.profileId} não encontrado`);
+      throw new NotFoundException('Você precisa criar um perfil antes de montar uma build');
     }
 
-    return await this.prisma.build.create({
+    return this.prisma.build.create({
       data: {
         name: dto.name,
         maxBudgetCents: dto.maxBudgetCents,
-        profileId: dto.profileId,
+        profileId: profile.id,
       },
     });
   }

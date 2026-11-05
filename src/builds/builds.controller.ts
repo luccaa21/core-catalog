@@ -8,8 +8,8 @@ export class BuildsController {
   constructor(private readonly buildsService: BuildsService) { }
 
   @Post()
-  async create(@Body() dto: CreateBuildDto) {
-    return this.buildsService.create(dto);
+  create(@Body() dto: CreateBuildDto, @Req() req: { user: { sub: number } }) {
+    return this.buildsService.create(dto, req.user.sub);
   }
 
   @Post(':id/items')

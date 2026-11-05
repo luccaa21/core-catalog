@@ -12,8 +12,4 @@ export class CreateBuildDto {
   @IsPositive()
   maxBudgetCents: number;
 
-  @ApiProperty({ example: 1, description: 'ID do perfil dono da build' })
-  @IsInt()
-  @IsPositive()
-  profileId: number;
 }
