@@ -38,7 +38,7 @@ model Manufacturer {
 model Component {
   id             Int           @id @default(autoincrement())
   name           String
-  category       String        // "CPU", "GPU", "RAM"...
+  category       String
   priceCents     Int
   powerWatts     Int
   manufacturer   Manufacturer  @relation(fields: [manufacturerId], references: [id], onDelete: Cascade)

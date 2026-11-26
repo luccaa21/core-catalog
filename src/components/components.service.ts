@@ -67,8 +67,6 @@ export class ComponentsService {
   async remove(id: number) {
     const component = await this.findOrFail(id);
 
-    // O schema apagaria a peça das builds em cascata, mudando o total de quem já
-    // montou uma build com ela. Por segurança, só exclui peça que não está em build.
     const builds = await this.prisma.buildItem.count({ where: { componentId: id } });
     if (builds > 0) {
       throw new ConflictException(

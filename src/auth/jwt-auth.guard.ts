@@ -10,20 +10,17 @@ export class JwtAuthGuard implements CanActivate {
 
         const req = ctx.switchToHttp().getRequest<any>();
 
-        // libera preflight CORS
         const method = (req.method || '').toUpperCase();
 
         if (method === 'OPTIONS') return true;
         const url = String(req.originalUrl || req.url || '');
 
-        // rotas públicas: login, cadastro e leitura do catálogo
         const isPublicAuth = url.startsWith('/auth/login') || url.startsWith('/auth/register');
         const isPublicCatalog =
             method === 'GET' && (url.startsWith('/components') || url.startsWith('/manufacturers'));
 
         if (isPublicAuth || isPublicCatalog) return true;
 
-        // exige Authorization: Bearer <token>
         const auth = String(req.headers?.authorization || '');
 
         if (!auth.startsWith('Bearer ')) {
@@ -32,7 +29,7 @@ export class JwtAuthGuard implements CanActivate {
 
         const token = auth.slice(7).trim();
         try {
-            req.user = this.jwt.verify(token); // valida assinatura/expiração
+            req.user = this.jwt.verify(token);
             return true;
         } catch {
             throw new UnauthorizedException('Token inválido ou expirado');

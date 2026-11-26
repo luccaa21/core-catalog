@@ -35,7 +35,6 @@ export class ManufacturersService {
         select: { id: true, name: true },
       });
     } catch (error) {
-      // P2002: violação de unicidade (já existe fabricante com esse nome)
       if ((error as { code?: string }).code === 'P2002') {
         throw new ConflictException(`Já existe um fabricante chamado "${dto.name.trim()}"`);
       }
@@ -46,8 +45,6 @@ export class ManufacturersService {
   async remove(id: number) {
     const manufacturer = await this.findOrFail(id);
 
-    // O schema apagaria as peças em cascata (e, com elas, os itens das builds de
-    // outras pessoas). Por segurança, só exclui fabricante sem peças cadastradas.
     const components = await this.prisma.component.count({
       where: { manufacturerId: id },
     });

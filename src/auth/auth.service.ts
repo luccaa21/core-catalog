@@ -24,8 +24,6 @@ export class AuthService {
     }
     
     async validate(email: string, password: string) {
-        //select na tabela where email = email
-        //retorna objeto User (name, email, pwd)
         const user = await this.userService.findByEmail(email);
 
         if (!user) return null;
