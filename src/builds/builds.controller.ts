@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, ParseIntPipe, Req } from '@nestjs/common';
+import { Controller, Get, Post, Delete, HttpCode, Body, Param, ParseIntPipe, Req } from '@nestjs/common';
 import { BuildsService } from './builds.service';
 import { CreateBuildDto } from './dto/create-build.dto';
 import { AddBuildItemDto } from './dto/add-build-item-dto';
@@ -27,6 +27,15 @@ export class BuildsController {
     @Req() req: { user: { sub: number } },
   ) {
     return this.buildsService.summary(id, req.user.sub);
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: { user: { sub: number } },
+  ) {
+    await this.buildsService.remove(id, req.user.sub);
   }
 
   @Get('mine')

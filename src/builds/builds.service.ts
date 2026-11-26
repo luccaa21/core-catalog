@@ -124,4 +124,19 @@ export class BuildsService {
       orderBy: { id: 'desc' },
     });
   }
+
+  async remove(id: number, userId: number) {
+    const build = await this.prisma.build.findUnique({
+      where: { id },
+      include: { profile: { select: { userId: true } } },
+    });
+
+    // Responde 404 também para builds de outros usuários, sem revelar que existem
+    if (!build || build.profile.userId !== userId) {
+      throw new NotFoundException(`Build ${id} não encontrada`);
+    }
+
+    // Os itens da build são apagados em cascata (onDelete: Cascade no schema)
+    await this.prisma.build.delete({ where: { id } });
+  }
 }
